@@ -2,6 +2,7 @@
 #include"list.h"
 #include "list.h"
 
+
 using namespace std;
 
 List::List()
@@ -11,15 +12,23 @@ List::List()
     tail = nullptr;
 }
 
-List::List(const List &l1) {
-    Size = 0;
-    head = nullptr;
-    tail = nullptr;
+List::~List()
+{
+    clear();
+}
 
+
+
+List::List(const List &l1) : List() {
+    this->operator=(l1);
+}
+
+List& List::operator=(const List& l1)
+{
     if (this != &l1)
     {
 
-        this->~List();
+        this->clear();
         Node *temp = l1.head;
 
         while (temp != nullptr)
@@ -28,6 +37,7 @@ List::List(const List &l1) {
             temp = temp->pNext;
         }
     }
+    return *this;
 }
 
 List::List(List&& other) : //конструктор перемещения
@@ -40,27 +50,24 @@ List::List(List&& other) : //конструктор перемещения
 }
 
 
-List::~List()
-{
-	while (head)
-	{
-		tail = head->pNext;
-		delete head;
-		head = tail;
-	}
-}
 
 List& List::operator+=(const int& newData)//оператор ввода
 {
+    this->add(newData);
+    return *this;
+}
+
+void List::add(int x)
+{
     Node* temp = new Node;
     temp->pNext = nullptr;
-    temp->data = newData;
+    temp->data = x;
 
     if (head)
     {
         Node* current = head;
         bool isFinal = false;
-        while (current->data < newData)
+        while (current->data < x)
         {
             if (!current->pNext)
             {
@@ -100,8 +107,8 @@ List& List::operator+=(const int& newData)//оператор ввода
         head = tail = temp;
     }
     Size++;
-    return *this;
 }
+
 
 
 ostream& operator<< (ostream& out, const List& i)//оператор вывода
@@ -136,24 +143,6 @@ bool List::operator==(const List& obj)// оператор сравнения с�
     }
     return false;
 }
-void List::add(int x)
-{
-    Node* temp = new Node;
-    temp->pNext = nullptr;
-    temp->data = x;
-
-    if (head != nullptr)
-    {
-        temp->pPrev = tail;
-        tail->pNext = temp;
-        tail = temp;
-    }
-    else
-    {
-        temp->pPrev = nullptr;
-        head = tail = temp;
-    }
-}
 
 List& List::operator&(List& l1)
 {
@@ -176,6 +165,8 @@ List& List::operator&(List& l1)
     }
     return *lst3;
 }
+
+
 
 List& List::operator|(List& l1)
 {
@@ -218,7 +209,25 @@ List& List::merge(List& l1)
     return *this;
 }
 
-List List::operator = (const List& l1)
-{
-    return List(l1);
+
+
+bool List::contains(int i) {
+    Node* current = head;
+    while (current->data <= i) {
+        if (current->data == i) {}
+    }
+    return false;
+}
+
+void List::clear() {
+    Node* current = head;
+    Node* next = nullptr;
+    while (current)
+    {
+        next = current->pNext;
+        free(current);
+        current = next;
+    }
+    this->head = this->tail = nullptr;
+    this->Size = 0;
 }

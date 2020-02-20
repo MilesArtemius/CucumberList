@@ -32,5 +32,8 @@ int main()
     List L4 = L1 | L2;
     cout << "4 List (first | second) is " << L4 << endl;
 
+    L4 = L3;
+    cout << "L3 (" << L3 << ") copied to L4 (" << L4 <<")" << endl;
+
     return 0;
 }
