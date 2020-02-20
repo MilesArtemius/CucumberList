@@ -3,4 +3,4 @@ project(CucumberList)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(CucumberList main.cpp list.cpp list.h)
+add_executable(CucumberList main.cpp list.cpp list.hpp)
