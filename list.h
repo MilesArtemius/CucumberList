@@ -22,7 +22,7 @@ public:
 
     List(const List& l1); // конструктор копирования
     List& operator=(const List& l1);
-    List(List&& other);//конструктор пермещения
+    List(List&& other) noexcept;//конструктор пермещения
 
     List& operator+= (const int& newData);//оператор ввода
     void add(int x);
@@ -32,7 +32,7 @@ public:
     List& operator&(List& l1);//оператор формирования третьего списка, состоящего из элементов, присутствующих в первом И втором
 
     List& operator|(List& l1); //оператор формирования третьего списка, состоящего из элементов, присутствующих в первом ИЛИ во втором
-    List& merge(List& l1);
+    List& merge(List& l1, bool isXOR = false);
 
 private:
     bool contains(int i);

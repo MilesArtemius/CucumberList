@@ -1,6 +1,4 @@
-﻿#include <iostream>
-#include"list.h"
-#include "list.h"
+﻿#include "list.h"
 
 
 using namespace std;
@@ -20,7 +18,7 @@ List::~List()
 
 
 List::List(const List &l1) : List() {
-    this->operator=(l1);
+    *this = l1;
 }
 
 List& List::operator=(const List& l1)
@@ -40,7 +38,7 @@ List& List::operator=(const List& l1)
     return *this;
 }
 
-List::List(List&& other) : //конструктор перемещения
+List::List(List&& other) noexcept : //конструктор перемещения
         head(other.head),
         tail(other.tail)
 {
@@ -59,25 +57,15 @@ List& List::operator+=(const int& newData)//оператор ввода
 
 void List::add(int x)
 {
-    Node* temp = new Node;
-    temp->pNext = nullptr;
+    Node* temp = new Node();
     temp->data = x;
 
     if (head)
     {
         Node* current = head;
-        bool isFinal = false;
-        while (current->data < x)
-        {
-            if (!current->pNext)
-            {
-                isFinal = true;
-                break;
-            }
-            current = current->pNext;
-        }
+        while ((current->data < x) && (current->pNext)) current = current->pNext;
 
-        if (isFinal)
+        if ((current == tail) && (current->data < x))
         {
             temp->pPrev = tail;
             tail->pNext = temp;
@@ -116,7 +104,8 @@ ostream& operator<< (ostream& out, const List& i)//оператор вывода
     Node* tmpNode = i.head;
     while (tmpNode)
     {
-        out << tmpNode->data << " ";
+        out << tmpNode->data;
+        if (tmpNode->pNext) out << " ";
         tmpNode = tmpNode->pNext;
     }
     return out;
@@ -124,97 +113,70 @@ ostream& operator<< (ostream& out, const List& i)//оператор вывода
 
 bool List::operator==(const List& obj)// оператор сравнения списков
 {
-    if (Size == 0 && obj.Size == 0)
-        return true;
-    if (Size != obj.Size)
-        return false;
-    if (head->data == obj.head->data)
+    if (Size == 0 && obj.Size == 0) return true;
+    if (Size != obj.Size) return false;
+
+    Node* currentElement = head;
+    Node* toCompare = obj.head;
+    bool equal = true;
+    while ((currentElement != nullptr) && (toCompare != nullptr))
     {
-        Node* currentElement = head;
-        Node* toCompare = obj.head;
-        while (currentElement != nullptr)
-        {
-            if (currentElement->data != toCompare->data)
-                return false;
-            currentElement = currentElement->pNext;
-            toCompare = toCompare->pNext;
-        }
-        return false;
+        equal &= currentElement->data == toCompare->data;
+        currentElement = currentElement->pNext;
+        toCompare = toCompare->pNext;
     }
-    return false;
+    return equal && ((!currentElement) && (!toCompare));
 }
 
 List& List::operator&(List& l1)
 {
-    List* lst3 = new List();
-    Node* ptr1 = this->head;
-    Node* ptr2;
+    List* newList = new List();
 
+    Node* ptr1 = this->head;
     while (ptr1)
     {
-        ptr2 = l1.head;
-        while (ptr2)
-        {
-            if (ptr1->data == ptr2->data)
-            {
-                lst3->add(ptr1->data);
-            }
-            ptr2 = ptr2->pNext;
-        }
+        if (l1.contains(ptr1->data)) *newList += ptr1->data;
         ptr1 = ptr1->pNext;
     }
-    return *lst3;
+
+    return *newList;
 }
 
 
 
 List& List::operator|(List& l1)
 {
-    List* list3 = new List();
-    Node* current = head;
-    while (current)
-    {
-        *list3 += current->data;
-        current = current->pNext;
-    }
-    current = l1.head;
-    while (current)
-    {
-        *list3 += current->data;
-        current = current->pNext;
-    }
-    return *list3;
-
+    return this->merge(l1, true);
 }
 
-List& List::merge(List& l1)
+List& List::merge(List& l1, bool isXOR)
 {
-    Node* current = head;
-    while (current->pNext)
+    List* newList = new List();
+
+    Node* ptr1 = this->head;
+    while (ptr1)
     {
-        current = current->pNext;
+        *newList += ptr1->data;
+        ptr1 = ptr1->pNext;
     }
-    Node* current1 = l1.head;
-    while (current)
+
+    ptr1 = l1.head;
+    while (ptr1)
     {
-        current->pNext = new Node;
-        current->pNext->data = current1->data;
-        current = current->pNext;
-        Node* temp;
-        temp = current1->pNext;
-        delete current1;
-        current1 = temp;
+        if ((!isXOR) || (!newList->contains(ptr1->data))) *newList += ptr1->data;
+        ptr1 = ptr1->pNext;
     }
-    l1.head = nullptr;
-    return *this;
+
+    return *newList;
 }
 
 
 
 bool List::contains(int i) {
     Node* current = head;
-    while (current->data <= i) {
-        if (current->data == i) {}
+    while ((current) && (current->data <= i)) {
+        if (current->data == i) return true;
+        current = current->pNext;
     }
     return false;
 }
