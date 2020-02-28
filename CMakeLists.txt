@@ -3,4 +3,6 @@ project(CucumberList)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(CucumberList main.cpp list.cpp list.hpp)
+file(GLOB_RECURSE sources stack/* list/*)
+
+add_executable(CucumberList ${sources})
