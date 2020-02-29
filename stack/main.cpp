@@ -4,7 +4,7 @@
 using namespace std;
 
 //TODO: rename to "main" to launch!
-int main()
+int main_stack()
 {
     const char* text00 = " ok ";
     cout << text00 << ": " << (testBalanceBrackets(text00) ? "right" : "wrong") << endl;
