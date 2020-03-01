@@ -48,6 +48,14 @@ bool Operator::isOperable(char symbol) {
     }
 }
 
+bool Operator::isOpeningParenthesis() {
+    return signum == O_PAR;
+}
+
+bool Operator::isClosingParenthesis() {
+    return signum == C_PAR;
+}
+
 
 
 int Operator::apply(int firstOperand, int secondOperand) {

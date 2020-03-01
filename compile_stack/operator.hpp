@@ -11,10 +11,13 @@ private:
 
 public:
     explicit Operator(char character);
+    Operator() = default;
     char deoperate();
     int prioritize();
 
     static bool isOperable(char symbol);
+    bool isOpeningParenthesis();
+    bool isClosingParenthesis();
 
     int apply(int firstOperand, int secondOperand);
 };
