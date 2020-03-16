@@ -5,9 +5,10 @@ using namespace std;
 
 //TODO: rename to "main" to launch!
 //TODO: какие тесты тут нужны я, если честно, не знаю...
-int main() {
+int compile_main() {
     const char* string = "1+2*3/5+2^3";
     const char* str = toPostfix(string);
     int ans = calculate(str);
     cout << string << " = " << str <<  " = " << ans << endl;
+    return 0;
 }
